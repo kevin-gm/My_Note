@@ -3,7 +3,7 @@
 ##一、下载
 从官网下载社会版本（MySQL Community Server ）：https://dev.mysql.com/downloads/
 <div  align="center">    
-	<img src="./images/1.png" width = "600" height = "150" alt="图片名称" 	align=center />
+	<img src="../../../resources/images/1.png" width = "600" height = "150" alt="图片名称" 	align=center />
 </div>
 
 ##二、安装
@@ -11,7 +11,7 @@ ZIP Archive版是免安装的。只要解压就行了。不需要安装
 
 PS:解压后是没有“data”文件夹以及“my.ini”配置文件的，这个后续配置的
 <div  align="center">    
-	<img src="./images/2.png" width = "600" height = "150" alt="图片名称" 	align=center />
+	<img src="../../../resources/images/2.png" width = "600" height = "150" alt="图片名称" 	align=center />
 </div>
 
 ##三、配置
@@ -48,7 +48,7 @@ PS:解压后是没有“data”文件夹以及“my.ini”配置文件的，这�
 	>>这时，应该会创建上述的data文件夹，并创建好默认数据库（用户名为root，密码为空），如果提示data文件夹不为空，则清空此文件夹重新执行命令
 	>>再次启动mysql服务
 <div  align="center">    
-	<img src="./images/3.png" width = "500" height = "200" alt="图片名称" 	align=center />
+	<img src="../../../resources/images/3.png" width = "500" height = "200" alt="图片名称" 	align=center />
 </div>
 
 ##五、添加环境变量
