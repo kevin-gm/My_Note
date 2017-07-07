@@ -1,0 +1,11 @@
+1.文本编辑器
+	1）、notepad+
+	2）、pilotEdit
+	3）、Markdown	
+
+2.可视化数据库管理
+	1）、HeidiSql
+
+3.远程链接
+	1）、Xshell
+	2）、Xftp
