@@ -1,0 +1,8 @@
+一、代码自动补全
+preferences --> setttings(user) 添加内容：
+  "auto_complete": true,
+	"auto_match_enabled": true
+  
+二、代码格式化
+preferences --> key bindings 添加内容：
+  { "keys": ["ctrl+shift+f"], "command": "reindent" }
