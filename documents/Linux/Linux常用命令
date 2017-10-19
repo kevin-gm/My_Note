@@ -1,0 +1,15 @@
+一、开放端口
+
+  yum install firewalld
+  
+  systemctl unmask firewalld
+  systemctl enable firewalld
+  systemctl start firewalld
+  
+  firewall-cmd --zone=public --add-port=80/tcp --permanent
+
+二、查看端口开放情况
+
+  yum install nmap
+  
+  nmap 127.0.0.1
