@@ -12,3 +12,18 @@ imis：班级论坛
   https://www.imgtrip.com/
   http://www.wallpaperflare.com/
   https://nohentai.com/SStatic/Picture/Tag/Scenery[1]
+
+
+cloud demo目标功能
+服务注册、发现: eureka
+配置管理:spring config , spring security
+集群容错: hystrix（待实现）
+API网关: zuul（待实现）
+服务负载:feign+ribbon
+api文档输出:swagger2
+代码简化:lombok
+消息队列:rabbitmq
+分布式锁: redis （待实现）
+链路跟踪:spring cloud sletuh ->zipkin
+安全认证:oauth2/JWT(待实现)
+服务监控:spring-boot-admin
