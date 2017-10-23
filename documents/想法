@@ -27,3 +27,4 @@ api文档输出:swagger2
 链路跟踪:spring cloud sletuh ->zipkin
 安全认证:oauth2/JWT(待实现)
 服务监控:spring-boot-admin
+接口管理：swagger2
