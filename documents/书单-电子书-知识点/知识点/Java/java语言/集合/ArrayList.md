@@ -1,16 +1,4 @@
-Java集合框架主要包括两种类型的容器，一种是**集合（Collection）**，存储一个元素集合，另一种是**图（Map）**，存储键/值对映射
-
-Collection接口又有3种子类型，**List**、**Set**和**Queue**，常用的具体实现由ArrayList、LinkedList、HashSet、LinkedHashSet、HashMap、LinkedHashMap等等
-
-## Collection接口
-collection接口是集合的根接口，继承自Iterable接口，所以集合是可迭代的。
-
-JDK1.8新增了几个关于流的默认实现。
-
-### List
-List是有序集合，可以允许重复元素
-
-#### ArrayList
+## ArrayList
 1. ArrayList，底层使用数组实现的，默认容量大小为10，可以在初始化时指定容量大小。
 	1. 不是线程安全的
 	2. 支持null元素
