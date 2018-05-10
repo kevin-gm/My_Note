@@ -36,8 +36,6 @@ Savepoints are useful for implementing complex error recovery in database applic
 ### Spring事务传播属性
 事务的传播行为是指，如果在开始当前事务之前，一个事务上下文已经存在，此时有若干选项可以指定一个事务性方法的执行行为。
 
-个人的理解是，Spring事务的传播特性就是对数据库中savepoint的抽象。
-
 传播属性定义在类：TransactionDefinition
 
 1. PROPAGATION_REQUIRED：如果当前存在事务，则加入该事务；如果当前没有事务，则创建一个新的事务。这是默认值。
@@ -211,7 +209,7 @@ Spring的事务有两种实现方式，编程式事务管理以及声明式事�
 
 	<!--  配置事务切面和建言 -->
 	<aop:config>
-		<aop:pointcut id="transServiceConfig" expression="execution(* site.coloured.trans.service.*.*(..))"/>
+		<aop:pointcut id="transServiceConfig" expression="execution(* site.coloured.trans.service..*.*(..))"/>
 		<aop:advisor advice-ref="transAdvice" pointcut-ref="transServiceConfig"/>
 	</aop:config>
 
@@ -792,10 +790,3 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 			findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
 			return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
 		}
-
-
-### 分布式事务
-
-JTA
-
-TCC
