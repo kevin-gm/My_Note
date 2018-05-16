@@ -1,4 +1,4 @@
-1、firewalld的基本使用
+#### firewalld的基本使用
 
   - 启动： 
 
@@ -12,8 +12,6 @@
   - 禁用： 
 
 		systemctl stop firewalld
- 
-2.systemctl是CentOS7的服务管理工具中主要的工具，它融合之前service和chkconfig的功能于一体。
 
   - 启动一个服务：
 
@@ -43,7 +41,7 @@
 
 		systemctl --failed
 
-3.配置firewalld-cmd
+#### 配置firewalld-cmd
 
   - 查看版本： 
 
@@ -56,7 +54,7 @@
 		firewall-cmd --state
   - 查看所有打开的端口： 
 
-		firewall-cmd --zone=public --list-ports</b>```
+		firewall-cmd --zone=public --list-ports
   - 更新防火墙规则： 
 
 		firewall-cmd --reload
@@ -76,7 +74,7 @@
 
 		firewall-cmd --query-panic
  
-那怎么开启一个端口呢
+#### 那怎么开启一个端口呢
 
   - 添加
   
