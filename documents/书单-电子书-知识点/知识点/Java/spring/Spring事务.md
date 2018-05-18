@@ -337,7 +337,24 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 			// ...
 		}
 
-	注意，通过查看 ```BeanFactoryTransactionAttributeSourceAdvisor``` 层次结构可知，该类实现了Advisor接口，这一点后面有用到。
+	```AnnotationTransactionAttributeSource``` 注解式事务属性抽象
+
+	```TransactionInterceptor``` 事务拦截器，与AOP内容有关，是通过拦截器来实现增强，在AOP的代理调用中，通过拦截器链来实现不同类型的增强处理，而Spring就是通过AOP实现的，事务拦截器的作用就不难理解。
+
+	```BeanFactoryTransactionAttributeSourceAdvisor``` 事务属性对应的增强器，该类实现了Advisor接口，Advisor就是增强器抽象，实现该接口表明当前类是需要被增强处理的。
+
+	```BeanFactoryTransactionAttributeSourceAdvisor``` 实例化了 ```TransactionAttributeSourcePointcut``` 属性，是一个抽象类，根据名字可知，是事务属性的切点抽象，它与 ```BeanFactoryTransactionAttributeSourceAdvisor``` 使用相同的 ```TransactionAttributeSource``` 属性
+
+		@Nullable
+		private TransactionAttributeSource transactionAttributeSource;
+	
+		private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
+			@Override
+			@Nullable
+			protected TransactionAttributeSource getTransactionAttributeSource() {
+				return transactionAttributeSource;
+			}
+		};
 
 
 6. 注册 ```InfrastructureAdvisorAutoProxyCreator```。
@@ -411,7 +428,6 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 10. 查看获取候选增强器的逻辑
 
 		protected List<Advisor> findCandidateAdvisors() {
-			Assert.state(this.advisorRetrievalHelper != null, "No BeanFactoryAdvisorRetrievalHelper available");
 			return this.advisorRetrievalHelper.findAdvisorBeans();
 		}
 	
@@ -483,19 +499,6 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 
 	所以上述逻辑中，会继续调用canApply方法，通过Debug可知，pca.getPointcut返回的是TransactionAttributeSourcePointcut类型的实例。
 
-	TransactionAttributeSourcePointcut是一个抽象类，它是在 ```BeanFactoryTransactionAttributeSourceAdvisor``` 中进行实例化的。
-
-		@Nullable
-		private TransactionAttributeSource transactionAttributeSource;
-	
-		private final TransactionAttributeSourcePointcut pointcut = new TransactionAttributeSourcePointcut() {
-			@Override
-			@Nullable
-			protected TransactionAttributeSource getTransactionAttributeSource() {
-				return transactionAttributeSource;
-			}
-		};
-
 	继续跟踪上述canApply的代码
 
 		public static boolean canApply(Pointcut pc, Class<?> targetClass, boolean hasIntroductions) {
@@ -549,7 +552,7 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 					return (TransactionAttribute) cached;
 				}
 			} else {
-				// TransactionAttribute接口集成自TransactionDefinition，所以其对应了事务的各项定义
+				// TransactionAttribute接口继承自TransactionDefinition，所以其对应了事务的各项定义
 				// 提取事务标签
 				TransactionAttribute txAttr = computeTransactionAttribute(method, targetClass);
 				// ...后续还有设置缓存操作。
@@ -567,7 +570,7 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 	
 			// 获取目标类的Class类型，主要是针对cglib的，忽略cglib的子类
 			Class<?> userClass = (targetClass != null ? ClassUtils.getUserClass(targetClass) : null);
-			// 获取实现中的对应方法，根据前面的内容，method本身可能是接口中的方法
+			// 获取实现类中的对应方法，根据前面的内容，method本身可能是接口中的方法
 			// 实际上这个实现类，就是我们的目标类，比如UserService
 			Method specificMethod = ClassUtils.getMostSpecificMethod(method, userClass);
 			// 如果方法含有泛型参数，则获取其原始方法
@@ -689,65 +692,16 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 			return rbta;
 		}
 
-	到此处为止，事务功能的初始化完成了，前面的逻辑里面，获取了对应的增强器，然后解析了@transactional的注解，使其成为TransactionDefinition的实例。
+	到此处为止，事务功能的初始化完成了，前面的逻辑里面，获取了对应的增强器，然后解析了```@Transactional``` 的注解，使其成为 ```TransactionDefinition``` 类型。
 
-	前面的代码中，BeanFactoryTransactionAttributeSourceAdvisor这个类，设置了 TransactionInterceptor 这个类作为其属性，由Spring AOP的知识可知，在调用事务增强器的代理类的方法是，会调用 TransactionInterceptor 进行增强，也就是会在其invoke方法中完成事务逻辑。（这个内容从网上获取，spring aop的知识未确认。）
+	虽然前面解析 ```@Transactional``` 注解时，返回的是 ```TransactionAttribute``` 类型，但是这个接口继承了 ```TransactionDefinition``` ，也就是返回的也是```TransactionDefinition``` 类型，而强调这个，是因为在spring中，对事务的抽象，```TransactionDefinition``` 是事务定义的顶级接口。此处说明的是，这个解析完成了事务的定义。
 
-12. 查看 ```TransactionInterceptor#invoke``` 的事务处理逻辑
-		
-		public Object invoke(final MethodInvocation invocation) throws Throwable {
-			// 获取到目标类
-			Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
-	
-			// 委托给TransactionAspectSupport进行处理
-			return invokeWithinTransaction(invocation.getMethod(), targetClass, invocation::proceed);
-		}
+	简单总结一下前面的所有内容，虽然内容很多，但一句话说明就是对于spring中的每一个bean，解析其方法，来获取当前类需要进行哪些增强处理。
 
-		// 在事务里面调用原始逻辑
-		protected Object invokeWithinTransaction(Method method, @Nullable Class<?> targetClass,
-			final InvocationCallback invocation) throws Throwable {
+	接下来就是对对应的增强进行代理生成。
 
-			// If the transaction attribute is null, the method is non-transactional.
-			TransactionAttributeSource tas = getTransactionAttributeSource();
-			// 获取事务定义
-			final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
-			// 获取事务管理器，不同的ORM有不同的事务管理器
-			final PlatformTransactionManager tm = determineTransactionManager(txAttr);
-			// 构造方法的唯一标识，比如 UserServiceImplement.save
-			final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
-			// 声明式事务处理
-			if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
-				// 构造 TransactionInfo ，该对象spring事务的各种信息，包括transactionmanager，transactiondefinition，***status等。
-				TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
-				Object retVal = null;
-				try {
-					// 执行被增强的方法
-					retVal = invocation.proceedWithInvocation();
-				}
-				catch (Throwable ex) {
-					// 异常回滚
-					completeTransactionAfterThrowing(txInfo, ex);
-					throw ex;
-				}
-				finally {
-					// 清除数据
-					cleanupTransactionInfo(txInfo);
-				}
-				// 提交事务
-				commitTransactionAfterReturning(txInfo);
-				return retVal;
-			}
-			// 编程式事务处理
-			else {
-				// ...
-			}
-		}
 
-	createTransactionIfNecessary里面还有很多逻辑，比如获取事务，对不同传播属性，隔离级别等的处理，嵌入式事务回滚点的处理等等，我们这里只是要知道事务的基本原理，不详细到每个配置属性的处理，有兴趣的可以继续跟踪源码。
-
-	最后简单看下，代理的生成，前面所说的增强，其实是对代理的增强。
-
-13. 代理生成逻辑
+12. 代理生成逻辑
 
 		protected Object createProxy(Class<?> beanClass, @Nullable String beanName,
 			@Nullable Object[] specificInterceptors, TargetSource targetSource) {
@@ -790,3 +744,134 @@ spring事务管理器回滚一个事务的推荐方法是在当前事务的上�
 			findDefinedEqualsAndHashCodeMethods(proxiedInterfaces);
 			return Proxy.newProxyInstance(classLoader, proxiedInterfaces, this);
 		}
+
+	此时，对spring的bean，根据其事务配置，按需生成了对应的代理类，并委托给spring进行管理。
+
+	具体的代理细节此处不表，跟AOP一致，此处对关键内容进行说明。
+
+	以 ```JdkDynamicAopProxy``` 为例，这个是JDK的动态代理类，这个类实现了 ```InvocationHandler``` 接口，这是标准的JDK动态代理的实现，也就是使用代理类进行调用时，实际调用的会是 ```JdkDynamicAopProxy``` 的 invoke 方法。
+
+		public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+			// 省略
+
+			// 获取当前方法上的拦截器链
+			// 如果深入这个逻辑可以看到，实际是看方法对应有没有事务增强配置
+			List<Object> chain = this.advised.getInterceptorsAndDynamicInterceptionAdvice(method, targetClass);
+
+			// 如果拦截器链为空，也就是没有事务配置，则直接调用原始方法
+			if (chain.isEmpty()) {
+				Object[] argsToUse = AopProxyUtils.adaptArgumentsIfNecessary(method, args);
+				retVal = AopUtils.invokeJoinpointUsingReflection(target, method, argsToUse);
+			}
+			else {
+				// 如果有拦截器链，则将请求封装成 MethodInvocation 类型
+				invocation = new ReflectiveMethodInvocation(proxy, target, method, args, targetClass, chain);
+				// 执行拦截器链
+				retVal = invocation.proceed();
+			}
+			// 省略返回结果的处理。
+		}
+
+	这里额外说明一点，当拦截器链为空时，则直接调用目标类的方法，不会进行增强处理。
+
+		public class service() {
+	        
+	        void A() {
+	            B();
+	        }
+	        
+	        @Transactional
+	        void B() {
+	            // 有需要进行事务管理的逻辑
+	        }
+	    }
+
+	客户端直接调用 service.A()，此时，虽然service是个代理类，但是事务是不会生效的。因为B方法是A方法内部调用的，不会单独走代理(常规的事务配置下，理论上aspectj可以实现，未验证).
+
+	TransactionInterceptor 是事务的增强拦截器，根据上面的内容可知，接来下就是调用拦截器的方法了。
+
+13. 查看 ```TransactionInterceptor#invoke``` 的事务处理逻辑
+		
+		public Object invoke(final MethodInvocation invocation) throws Throwable {
+			// 获取到目标类
+			Class<?> targetClass = (invocation.getThis() != null ? AopUtils.getTargetClass(invocation.getThis()) : null);
+	
+			// 委托给TransactionAspectSupport进行处理
+			return invokeWithinTransaction(invocation.getMethod(), targetClass, new InvocationCallback() {
+				@Override
+				public Object proceedWithInvocation() throws Throwable {
+					return invocation.proceed();
+				}
+			});
+		}
+
+		protected Object invokeWithinTransaction(Method method, @Nullable Class<?> targetClass,
+			final InvocationCallback invocation) throws Throwable {
+
+			// If the transaction attribute is null, the method is non-transactional.
+			TransactionAttributeSource tas = getTransactionAttributeSource();
+			// 获取事务定义
+			final TransactionAttribute txAttr = (tas != null ? tas.getTransactionAttribute(method, targetClass) : null);
+			// 获取事务管理器，不同的ORM有不同的事务管理器
+			final PlatformTransactionManager tm = determineTransactionManager(txAttr);
+			// 构造方法的唯一标识，比如 UserServiceImplement.save
+			final String joinpointIdentification = methodIdentification(method, targetClass, txAttr);
+			// 声明式事务处理
+			if (txAttr == null || !(tm instanceof CallbackPreferringPlatformTransactionManager)) {
+				// 构造 TransactionInfo ，该对象spring事务的各种信息，包括transactionmanager，transactiondefinition，***status等。
+				TransactionInfo txInfo = createTransactionIfNecessary(tm, txAttr, joinpointIdentification);
+				Object retVal = null;
+				try {
+					// 执行被增强的方法
+					retVal = invocation.proceedWithInvocation();
+				}
+				catch (Throwable ex) {
+					// 异常回滚
+					completeTransactionAfterThrowing(txInfo, ex);
+					throw ex;
+				}
+				finally {
+					// 清除数据
+					cleanupTransactionInfo(txInfo);
+				}
+				// 提交事务
+				commitTransactionAfterReturning(txInfo);
+				return retVal;
+			}
+			// 编程式事务处理
+			else {
+				// ...
+			}
+		}
+
+	createTransactionIfNecessary里面还有很多逻辑，比如获取事务，对不同传播属性，隔离级别等的处理，嵌入式事务回滚点的处理等等，我们这里只是要知道事务的基本原理，不详细到每个配置属性的处理，有兴趣的可以继续跟踪源码。
+
+最后说明一下，事务与数据库连接，看下对于事务控制的连接获取(如果没有事务，就是从连接池随机获取一个连接)
+
+	protected void doBegin(Object transaction, TransactionDefinition definition) {
+		DataSourceTransactionObject txObject = (DataSourceTransactionObject) transaction;
+		Connection con = null;
+
+		try {
+			// 如果当前事务没有连接持有器，则获取一个新的连接，然后设置持有器
+			if (txObject.getConnectionHolder() == null ||
+					txObject.getConnectionHolder().isSynchronizedWithTransaction()) {
+				Connection newCon = this.dataSource.getConnection();
+				if (logger.isDebugEnabled()) {
+					logger.debug("Acquired Connection [" + newCon + "] for JDBC transaction");
+				}
+				txObject.setConnectionHolder(new ConnectionHolder(newCon), true);
+			}
+
+			txObject.getConnectionHolder().setSynchronizedWithTransaction(true);
+			// 从持有器获取连接
+			con = txObject.getConnectionHolder().getConnection();
+		}
+	}
+
+在常规的 controller - service - dao 的结构中，一般事务会配置在service层，因为这层才是业务逻辑层，需要进行事务控制。
+
+从上面的代码可知，同一个事务，使用的是同一个数据库连接；不同的事务，使用不同的数据库连接。
+
+举个例子：如果在一次请求中，有多个原子类的service服务，也就是每个service执行一条sql语句，每个都有事务配置，然后controller里面调用这多个service，那么，此时一个是可能达不到事务要求，二是会是多个不同的事务，会使用多个数据库连接，而数据库连接是很珍贵的资源，所以一般最好将业务逻辑全部放到service层，统一进行事务配置。
+
