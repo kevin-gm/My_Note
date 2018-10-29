@@ -15,6 +15,8 @@
 		* /org/apache/catalina/startup/catalina.properties
 4. ClassLoaderFactory：类加载器创建工厂，用于创建Tomcat自定义的类加载器
 5. SecurityClassLoad：用于加载Tomcat所需的基本类
+6. SecurityConfig：Catalina安全访问工具类
+7. Security：集中了所有的安全属性和通用安全方法。
 
 
 二、 启动步骤
@@ -23,13 +25,13 @@
 2. 实例化``Bootstrap``对象，此时会对Bootstrap进行类的加载初始化。
 3. 执行Bootstrap实例对象的init方法
 	* 初始化类加载器
-		* commonLoader：公共的类加载器，Tomcat和应用都可以使用
+		* commonLoader：公共的类加载器，父加载器为null，Tomcat和应用都可以使用
 			* ${catalina.base}/lib
 			* ${catalina.base}/lib/*.jar
 			* ${catalina.home}/lib
 			* ${catalina.home}/lib/*.jar
-		* catalinaLoader
-		* sharedLoader
+		* catalinaLoader：其父加载器为commonLoader
+		* sharedLoader：其父加载器为commonLoader
 	* 设置当前线程的类加载器为catalinaLoader
 	* 使用当前线程的类加载器加载Tomcat基础类
 		* loadCorePackage：加载核心类，包路径为：org.apache.catalina.core
