@@ -6,9 +6,14 @@
  
   ./shadowsocks.sh 2>&1 | tee shadowsocks.log
  
-提示输入密码: 如果不输入密码则默认密码为:teddysun.com
-提示输入端口: 默认端口8989
-提示输入加密方式: 选择aes-256-cfb 默认aes-256-gcm
+ 如果是SSR，则将上述命令的shadowsocks  替换为  shadowsocksR
+ 
+- 提示输入密码: 如果不输入密码则默认密码为:teddysun.com
+- 提示输入端口: 默认端口8989
+- 提示输入加密方式: 选择aes-256-cfb 默认aes-256-gcm
+- 如果是SSR，协议选择：auth_sha1_v4_compatible
+- obfs(混淆方式)选择：http_simple_compatible
+
  
  
 安装完成后，脚本提示如下：
