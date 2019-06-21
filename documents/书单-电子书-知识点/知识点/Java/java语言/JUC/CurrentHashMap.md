@@ -24,4 +24,8 @@ ConcurrentHashMap 支持一组顺序和并行批量操作，与大多数流式�
 	- 使用给定的基值减少标量的 double，long，int
 
 
-批量操作接受一个并行阀值(parallelismThreshold)的参数。 如果当前map的size预计会小于给定的阀值，则方法会顺序执行，使用 Long.MAX_VALUE 会抑制所有的并行性。
+批量操作接受一个并行阀值(parallelismThreshold)的参数。 如果当前map的size预计会小于给定的阀值，则方法会顺序执行，如果值为 Long.MAX_VALUE 会抑制所有的并行性，如果值为 1 则会通过划分为足够的子任务来充分利用利用并行计算的 ForkJoinPool#commonPool() ，从而实现最大的并行度。 通常，初始时可能会选择某一个极端的值，然后通过 中间值 来测量开销与吞吐量之间的性能差异。
+
+批量操作的并发属性与ConcurrentHashMap一致：get(key) 返回的任何非空结果，与插入和修改操作遵循 先行发生(happen-before)原则。 批量操作的结果反映了每个元素关系的组成(但对整个map而言不一定是原子的)。 相反，由于在map中 健-值 都不会为空，所以 null作为当前缺少任何结果的可靠原子指示器。 为了维护这个属性，null作为所有非标量的缩减(reduction)操作隐含的基础。 对于 double,long,int版本，基础应该是，当结合任何其他值时，返回那个值(更正式的说，他应该是缩减(reduction)的元素)。 最常见的reduction操作具有这些属性；例如，以基数0求和，或者以基数MAX_VALUE 计算最小值。
+
+当 search 和 transformation 方法作为参数时(行为参数化)，应当类似的返回null以表明缺少任何结果(也不会被使用)。 在映射缩减(mapped reduction)的情况下，这也使得变换(transformations)能用作过滤器，如果不需要结合元素就返回空值(或者如果是原始数据类型，则返回其基本类型)。基于"null表示没有任何东西"这一规则，可以在 search 和 reduce 之前自由组合 transformations 和 filterings
