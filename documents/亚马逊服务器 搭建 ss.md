@@ -1,12 +1,15 @@
 1.使用root用户执行以下命令:
 
-  wget --no-check-certificate -O shadowsocks.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
+  
+    wget --no-check-certificate -O shadowsocks.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocks.sh
  
-  chmod +x shadowsocks.sh
+    chmod +x shadowsocks.sh
  
-  ./shadowsocks.sh 2>&1 | tee shadowsocks.log
+    ./shadowsocks.sh 2>&1 | tee shadowsocks.log
  
- 如果是SSR，则将上述命令的shadowsocks  替换为  shadowsocksR
+ 如果是SSR，则将上述命令的shadowsocks  替换为  shadowsocksR，即命令为
+ 
+    wget --no-check-certificate -O shadowsocksR.sh https://raw.githubusercontent.com/teddysun/shadowsocks_install/master/shadowsocksR.sh
  
 - 提示输入密码: 如果不输入密码则默认密码为:teddysun.com
 - 提示输入端口: 默认端口8989
