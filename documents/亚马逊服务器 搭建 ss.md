@@ -76,3 +76,8 @@
 重启： ```/etc/init.d/shadowsocks restart```
 
 状态： ```/etc/init.d/shadowsocks status```
+
+
+for free
+
+  https://jisu365.vip/user/node
