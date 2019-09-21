@@ -31,7 +31,7 @@
 
         [root@vultr ~]# vi /etc/ssh/sshd_config
     
-    结果为：
+    比如(此时22端口不要注释，防止有问题登陆不上ssh，等一切ok后可以选择屏蔽22端口)：
     >
         Port 22
         Port 22345
@@ -43,5 +43,7 @@
     
 4. 防火墙配置，开放端口
 
-        [root@vultr ~]# firewall-cmd --permanent--add-port=62231/tcp
+        [root@vultr ~]# firewall-cmd --permanent--add-port=22345/tcp
         [root@vultr ~]# firewall-cmd --reload
+
+此时，应该已经可以使用 22345 进行 ssh 登录了，如果不再想放开22端口，则可以将sshd_config中的配置注释，重启服务
