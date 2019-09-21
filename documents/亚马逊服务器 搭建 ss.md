@@ -78,8 +78,27 @@
 状态： ```/etc/init.d/shadowsocks status```
 
 
+
+
+
 for free
 
   https://jisu365.vip/user/node
   
   http://neuk.fun
+  
+  
+  IP被Q后，要登录对应的vps，可以通过全局VPN代理，比如Express VPN，或者 另找一个没有被Q的代理
+  
+  
+IP 被Q后，一种解决方法
+
+- 注册一个域名：https://www.namesilo.com/    1428373964@qq.com
+
+- 配置域名解析：cloudflare.com    1428373964@qq.com
+
+  - 初始时，dns点击禁用，添加解析记录
+  - SSL/TLS 必须是 full，并且需等待 note提示：active
+  - DNS，将之前的解析记录开启
+  
+- SSR 访问时，服务器填域名
