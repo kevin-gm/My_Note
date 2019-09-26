@@ -41,22 +41,22 @@
   轮询的方式发送到topic的各个分区。需要注意，如果key不为null，则计算得到的分区号是所有分区中的任意一个，而如果key等于null，则是可用分区中的任意
   一个。Kafka默认分区器代码如下：
   
-    public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
-        List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
-        int numPartitions = partitions.size();
-        if (keyBytes == null) {
-            int nextValue = nextValue(topic);
-            List<PartitionInfo> availablePartitions = cluster.availablePartitionsForTopic(topic);
-            if (availablePartitions.size() > 0) {
-                int part = Utils.toPositive(nextValue) % availablePartitions.size();
-                return availablePartitions.get(part).partition();
-            } else {
-                return Utils.toPositive(nextValue) % numPartitions;
-            }
-        } else {
-            return Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions;
-        }
-    }
+      public int partition(String topic, Object key, byte[] keyBytes, Object value, byte[] valueBytes, Cluster cluster) {
+          List<PartitionInfo> partitions = cluster.partitionsForTopic(topic);
+          int numPartitions = partitions.size();
+          if (keyBytes == null) {
+              int nextValue = nextValue(topic);
+              List<PartitionInfo> availablePartitions = cluster.availablePartitionsForTopic(topic);
+              if (availablePartitions.size() > 0) {
+                  int part = Utils.toPositive(nextValue) % availablePartitions.size();
+                  return availablePartitions.get(part).partition();
+              } else {
+                  return Utils.toPositive(nextValue) % numPartitions;
+              }
+          } else {
+              return Utils.toPositive(Utils.murmur2(keyBytes)) % numPartitions;
+          }
+      }
     
   - 拦截器：可以用来在消息发送前进行一些处理，比如过滤掉不符合要求的消息，修改消息内容等，也可以用来在发送回调逻辑前做一些定制化的需求。KafkaProducer
   会在消息被应答之前或者消息发送失败时调用生产者拦截器的onKnowledgement() 方法，优先于用于设定的callback
@@ -185,34 +185,68 @@
   - 
 
 29. Kafka中的幂等是怎么实现的
-Kafka中的事务是怎么实现的（这题我去面试6加被问4次，照着答案念也要念十几分钟，面试官简直凑不要脸）
-Kafka中有那些地方需要选举？这些地方的选举策略又有哪些？
-失效副本是指什么？有那些应对措施？
-多副本下，各个副本中的HW和LEO的演变过程
-为什么Kafka不支持读写分离？
-Kafka在可靠性方面做了哪些改进？（HW, LeaderEpoch）
-Kafka中怎么实现死信队列和重试队列？
+  - 幂等开启，enable.idempotence=true
+  - 引入producer id和序列号。producerId，由kafka生成，<producerId,分区> 对应的序列号每次消息发送会加1，broker端对比序列号，比broker端维护的序列号大1才会接受
+  - kafka保证的是单生产者单分区的消息发送的幂等
+  
+30. Kafka中的事务是怎么实现的（这题我去面试6加被问4次，照着答案念也要念十几分钟，面试官简直凑不要脸）
+  - 幂等不能跨分区，事务可以弥补这个缺陷
+  - 客户端指定transactionId，transaction.id=********
+  - 生产者需要开启幂等
+  - transactionId 与 produerId 一一对应，区别是，transactionId由用户指定，producerID由kafka生成
+  - 为了保证相同transactionId对应的旧的生产者立即失效，通过transactionId获取PID时，还会获取一个单调递增的producer epoch
+  - 对消费者而言，通过 isolation.level 控制事务隔离级别，对于 read_uncommited ，生产者发送的尚未提交事务的消息对消费者是可见的。对于 read_committed，则不能看到尚未提交的事务，kafkaconsumer内部会缓存，等事务提交了，就会推送给消费端，如果事务abort了，则这部分消息会丢弃。
+
+31. Kafka中有那些地方需要选举？这些地方的选举策略又有哪些？
+  - 控制器
+  - leader副本
+
+32. 失效副本是指什么？有那些应对措施？
+  - ISR集合之外的副本就是失效副本，也就是与ISR不能保持一定程度同步的副本。
+
+33. 多副本下，各个副本中的HW和LEO的演变过程
+
+34. 为什么Kafka不支持读写分离？
+  - 代码复杂度更高，复杂度越高，出现问题的可能性越大
+  - 数据一致性，主从同步需要时间，有一定的滞后性
+  - 延时，kafka的消息是保存在磁盘，主从复制时间开销大
+  - 一般读写分离是分摊节点压力，而kafka的分区可以实现负载
+
+35. Kafka在可靠性方面做了哪些改进？（HW, LeaderEpoch）
+  - kafka只能消费到HW之前的消息，从producer角度看，对于acks=-1的，必须是ISR集合都确认收到，也就是此时消息在HW范围内，消息就不会丢失(清理策略清理掉的除外)，
+  - leader epoch 代表leader的纪元信息，初始值为0，每次leader变更一次，epoch的值就+1。follower重启收到leader的response后，比对epoch，发现一致，则不需要截断
+
+36. Kafka中怎么实现死信队列和重试队列？
+  - 发送到其他队列
+
 Kafka中的延迟队列怎么实现（这题被问的比事务那题还要多！！！听说你会Kafka，那你说说延迟队列怎么实现？）
+  - 消费者拦截器，根据时间，只消费达到时间的。但是这种方式，会有
+  - 发送到内部 delay_topic_? ，内部通过DelayQueue缓存数据，另起单独的线程拉取消息，专门的消息发送线程发送到真实主题（生产者将消息发送到一个地方，然后通过另一个服务拉取并转发到真是主题）
+  - 缓存在broker段，结合时间轮
+
 Kafka中怎么做消息审计？
+
 Kafka中怎么做消息轨迹？
+
 Kafka中有那些配置参数比较有意思？聊一聊你的看法
+
 Kafka中有那些命名比较有意思？聊一聊你的看法
+
 Kafka有哪些指标需要着重关注？
+
 怎么计算Lag？(注意read_uncommitted和read_committed状态下的不同)
+
 Kafka的那些设计让它有如此高的性能？
+
 Kafka有什么优缺点？
+
 还用过什么同质类的其它产品，与Kafka相比有什么优缺点？
+
 为什么选择Kafka?
+
 在使用Kafka的过程中遇到过什么困难？怎么解决的？
+
 怎么样才能确保Kafka极大程度上的可靠性？
+
 聊一聊你对Kafka生态的理解
-
-
-
-
-
-
-
-
-
 
