@@ -1,3 +1,12 @@
+### centos7 安装firewall
+在CentOS7.4中，系统已经默认安装了firewalld，所以一般只需要安装 ```firewall-config```
+
+	yum install -y firewall-config
+	
+如果不确定本机的firewall是否是最新版本，可以进行更新，如果本机还没安装，将更新改为安装
+
+	yum -y update firewalld
+
 #### firewalld的基本使用
 
   - 启动： 
