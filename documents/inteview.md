@@ -130,3 +130,10 @@ DelayQueue：延时队列，内部维护了一个优先级队列(PriorityQueue)�
 对于非公平锁，获取共享资源时，只要判断共享资源当前没有被其他线程持有，就有机会获得；而对于公平锁，即使获取共享资源的瞬间没有其他线程持有，只要等待队列有正常等待共享资源的线程，当前线程都只能添加到等待队列，而不能直接获取。
 
 可重入时通过AQS内部的 state 状态判断维护的，当前线程每次获取共享资源，state都会加一，所以最后也要相应的减1，直到state=0，其他线程才能获取到。
+
+### 多线程之间的通信
+- synchronized+wait+notify
+- while(true)+volatile
+- reentrantlock+await+signal
+- locksupport+park+unpark
+- countdownlatch
