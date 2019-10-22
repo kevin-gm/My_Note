@@ -137,3 +137,24 @@ DelayQueue：延时队列，内部维护了一个优先级队列(PriorityQueue)�
 - reentrantlock+await+signal
 - locksupport+park+unpark
 - countdownlatch
+
+
+### 以订单为例，分库分表后，如果查用户的订单，查某个时间范围内的订单，如何根据订单号查订单
+按用户维度分库分表，按时间维度分库分表进行冗余，订单号设定规则，比如包含用户号，这样就可以解析出来属于哪个用户的，然后去对应的库查询
+
+### 微博，明星文章推送给分析
+
+### synchronized与reentrantlock的区别
+- 使用便利性
+- reentrantlock可以设定超时时间，防止死锁
+- synchronized是JVM实现的，reentrantlock是java语言层面的
+- synchronized不需要手动释放锁，reentrantlock必须手动释放锁
+- reentrantlock可以响应中断，通过lock.interruptly()
+- reentrantlock 有公平和非公平两种模式
+- reentrantlock一定程度上能防止死锁，通过给获取锁加超时时间
+
+### 线程池，参数，线程执行完就结束了，线程池如何保证核心线程数一直存在
+
+### 主键索引和普通索引
+
+### 事务隔离级别，sql举例
