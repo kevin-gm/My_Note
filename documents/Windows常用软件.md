@@ -33,6 +33,8 @@
 - redisdesktopmanager
 - soupui
 - jprofile
+- markdown pad
+- typora
 
 ### 开发环境
 - java
