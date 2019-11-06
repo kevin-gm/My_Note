@@ -16,6 +16,23 @@
 
 ### 开发
 - IDEA
+  - .ignore
+  - alibaba java coding guidelines
+  - background image plus
+  - builder generator
+  - findbugs-idea
+  - free mybatis plugin
+  - gsonformat
+  - jprofiler
+  - lombok plugin
+  - maven helper
+  - protobuf support
+  - rainbow brackets
+  - snakeyaml plugin
+  - translation
+  - visualvm launcher
+  - yaml/ansible support
+  - bytecode viewer
 - sublime text
 - MobaXterm
 - postman
