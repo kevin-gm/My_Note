@@ -40,6 +40,7 @@
 - git
 - pilotedit：超大文件查看搜索
 - tortoise svn
+- maven
 
 ### 工具
 - charles/fiddler
