@@ -53,6 +53,7 @@
 - jprofile
 - markdown pad
 - typora
+- Diffinity
 
 ### 开发环境
 - java
