@@ -49,11 +49,15 @@
 - freemind
 - powerdesigner
 - redisdesktopmanager
+- Robomongo
 - soupui
 - jprofile
 - markdown pad
 - typora
 - Diffinity
+- ScreenToGif: GIF生成
+- Snipaste: 截屏
+- MindMaster: 思维导图
 
 ### 开发环境
 - java
