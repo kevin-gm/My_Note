@@ -57,4 +57,6 @@ drwxr-xr-x 2 root root      520 Mar 15 05:56 char  依次介绍
 
 	passwd username
 
-五、
+五、CentOS8 重启network
+
+	nmcli c reload
