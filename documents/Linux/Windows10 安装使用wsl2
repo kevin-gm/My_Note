@@ -1,0 +1,34 @@
+官方教程地址：https://docs.microsoft.com/en-us/windows/wsl/install-win10
+
+前置条件：
+- win10
+- 1909 18363.1049（此版本才支持 wsl2）
+- 如果版本不够，更新windows
+
+
+1. 开启支持wsl
+  - windows服务，或者命令
+  
+    ```dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart```
+    
+2. 开启支持虚拟机平台
+  - windows服务，或者命令
+  
+    ```dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart```
+    
+3. 有了第一步后，就可以使用wsl，然后可以从 windows 商店 下载安装 Linux系统，官方推荐的首选是 Ubuntu，但此时的 wsl 版本是 1
+  
+  如果需要使用 wsl2，先执行第二个步骤，然后执行下述命令：
+  
+    ```wsl --set-default-version 2```
+    
+    
+4. 使用 wsl 安装使用 centos
+  - 需要从github下载使用，个人目前使用的镜像地址为：https://github.com/yuk7/CentWSL/releases
+  - 下载后，解压，双击运行 .exe 程序
+  - 安装好了后，再次双击 .exe 程序，即可使用。
+  
+5. 卸载
+  - 不能直接删除文件夹，可以能会影响以后的使用，需要先清理，命令如下：
+
+  ```./CentOS8.exe clean```
