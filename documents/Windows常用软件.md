@@ -69,3 +69,23 @@
 - nvm
 - mysql
 - vmware
+
+### 在线电子书
+- https://www.jiumodiary.com/ : 
+- http://www.toplinks.cc/s/ : 主要收集文档类资源下载链接的聚合型搜索引擎网站
+- https://www.kgbook.com/ : 电子书分享平台苦瓜书盘是供网友交流适合电纸书阅读的6寸pdf及mobi格式电子书制作技术的网站
+- http://www.banshujiang.cn/ : 搬书匠供大量编程类电子书免费下载，根据语音，数据库，年份等分类整理。
+- http://cn.epubee.com/books/
+- http://www.qcenglish.com/
+- http://gen.lib.rus.ec/
+- http://www.gutenberg.org/ 
+- http://manybooks.net
+- https://b-ok.cc/
+- https://zh.booksc.org/
+- https://pup6.yunzhan365.com/bookcase/kiru/index.html
+- http://www.ndlib.cn/ : 北大出版社电子教材书架，目前提供 680 多册不同专业的教材，支持关键词搜索，也可以按学科进行筛选
+- http://www.ndlib.cn/ : 数字图书馆推广工程汇集国内各省市图书馆，提供免费的图书、杂志、有声读物在线浏览，分类齐全，资源众多，可切换国内任一家图书馆
+- http://www.ucdrs.superlib.net/ : 与各大高校图书馆合作的全国图书馆参考咨询联盟
+- https://ebook.chongbuluo.com/ : 虫部落集合了几十个电子书网站
+- https://ebook.huzerui.com/ : 熊猫搜书聚合了 22 个高质量电子书搜索网站
+- 
