@@ -1,0 +1,28 @@
+一、拉取镜像
+
+  docker pull wurstmeister/kafka
+  docker pull wurstmeister/zookeeper
+  
+二、安装zookeeper
+
+  docker run –d –name zookeeper –p 2181:2181 –t wurstmerister/zookeeper
+  
+三、安装kafka
+
+  docker run -d --name kafka-node1 -p 9092:9092 -e KAFKA_BROKER_ID=0 -e KAFKA_ZOOKEEPER_CONNECT=10.8.144.31:21811 -e KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://10.8.144.31:9092 -e KAFKA_LISTENERS=PLAINTEXT://0.0.0.0:9092 -t wurstmeister/kafka
+  
+四、进去kafka
+
+  docker exec -ti kafka-node1 /bin/bash
+  
+五、创建主题
+
+  ./bin/kafka-topics.sh --create --topic test --zookeeper 10.8.144.31:21811 --replication-factor 1 --partitions 1
+  
+六、发送消息
+
+  ./bin/kafka-console-producer.sh --broker-list 10.8.144.31:9092 --topic test
+  
+七、消费消息
+
+  ./bin/kafka-console-consumer.sh --bootstrap-server 10.8.144.31:9092 --topic test --from-beginning
