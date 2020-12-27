@@ -19,6 +19,10 @@
 
   ./bin/kafka-topics.sh --create --topic test --zookeeper 10.8.144.31:21811 --replication-factor 1 --partitions 1
   
+查看
+
+  ././bin/kafka-topics.sh --zookeeper 10.8.144.31:21811 --describe --topic test
+  
 六、发送消息
 
   ./bin/kafka-console-producer.sh --broker-list 10.8.144.31:9092 --topic test
