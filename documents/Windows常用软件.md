@@ -21,6 +21,7 @@
   - background image plus
   - builder generator
   - findbugs-idea
+  - IDEA QAPlug：帮助我们提前找到潜在的问题bug
   - free mybatis plugin
   - gsonformat
   - jprofiler
@@ -33,6 +34,14 @@
   - visualvm launcher
   - yaml/ansible support
   - bytecode viewer
+  - jclasslib bytecode viewer：查看字节码
+  - Key promoter X：操作时的快捷键提示
+  - SequenceDiagram：调用链路自动生成时序图
+  - Leetcode Editor：可以在IDEA中在线刷题。
+  - GenerateO2O：自动填充参数的值
+  - GenerateAllSetter：自动调用所有 Setter 函数
+  - String Manipulation：对字符串的处理
+  - Java Stream Debugger: Stream 将操作步骤可视化
 - sublime text
 - MobaXterm
 - postman
