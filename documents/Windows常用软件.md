@@ -44,6 +44,7 @@
   - Java Stream Debugger: Stream 将操作步骤可视化
 - sublime text
 - MobaXterm
+- tabby：终端
 - postman
 - workbench
 - git
