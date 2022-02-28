@@ -70,7 +70,8 @@
 - MindMaster: 思维导图
 - http://www.pdman.cn/#/
 - 在线ER图：https://www.freedgo.com/，微信账号登录
-- redisinsight:https://redis.com/redis-enterprise/redis-insight/
+- redis官方可视化工具redisinsight:https://redis.com/redis-enterprise/redis-insight/
+- 数据库建模-chiner：http://chiner-release.httpchk.com/CHINER-win_v3.5.7.exe
 
 ### 开发环境
 - java
