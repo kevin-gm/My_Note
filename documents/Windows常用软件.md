@@ -70,6 +70,7 @@
 - MindMaster: 思维导图
 - http://www.pdman.cn/#/
 - 在线ER图：https://www.freedgo.com/，微信账号登录
+- redisinsight:https://redis.com/redis-enterprise/redis-insight/
 
 ### 开发环境
 - java
