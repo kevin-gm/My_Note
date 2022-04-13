@@ -11,6 +11,7 @@
   - Requestly: Modify Headers, Mock API, Redirect：请求修改
   - The FKing Github：github仓库搜索，内容太多不好查找用这个
   - 猫抓：m3u8资源下载
+  - itab：www.itab.link
 - 微信
 - tim/qq
 - firefox
@@ -18,6 +19,7 @@
 - 7zip/bandizip
 - everything：全局文件查找工具
 - 福昕阅读器
+- wox：www.wox.one
 
 ### 开发
 - IDEA
