@@ -6,6 +6,11 @@
   - Axure
   - Vue Devtools
   - apizza
+  - Awesome Screenshot 截图录屏
+  - Octotree - GitHub code tree: github文件树形展示
+  - Requestly: Modify Headers, Mock API, Redirect：请求修改
+  - The FKing Github：github仓库搜索，内容太多不好查找用这个
+  - 猫抓：m3u8资源下载
 - 微信
 - tim/qq
 - firefox
