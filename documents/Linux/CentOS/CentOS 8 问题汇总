@@ -1,0 +1,18 @@
+一、安装软件报错```Error: Failed to download metadata for repo 'appstream': Cannot prepare internal mirrorlist: No URLs in mirrorlist```
+(一)原因：CentOS Linux 8 已于 2021 年 12 月 31 日结束生命周期 (EOL)。这意味着 CentOS 8 将不再从 CentOS 官方项目获得开发资源。在 2021 年 12 月 31 日之后，如果需要更新CentOS，需要将镜像更改为 vault.centos.org
+(二)解决步骤：
+1) 切换目录：```cd /etc/yum.repos.d/```
+2) 执行以下两条命令
+```
+sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+
+sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+```
+3) 更换阿里镜像源，执行以下三条命令
+```
+wget -O /etc/yum.repos.d/CentOS-Base.repo https://mirrors.aliyun.com/repo/Centos-vault-8.5.2111.repo
+
+yum clean all
+
+yum makecache
+```
