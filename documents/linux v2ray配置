@@ -34,3 +34,16 @@ https://www.zhuguodong.com/?id=535
 
 
 CentOS 7 开启BBR加速：https://www.zhuguodong.com/?id=497
+
+CentOS 8 开启BBR加速
+#加载BBR算法
+/sbin/modprobe tcp_bbr
+#编辑系统配置文件
+sudo vi /etc/sysctl.conf
+#结尾添加两行
+net.core.default_qdisc=fq
+net.ipv4.tcp_congestion_control=bbr
+#使修改生效
+sysctl -p
+#查看已加载算法模块
+sysctl net.ipv4.tcp_available_congestion_control
